@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DesaBiz AI - Platform B2B modern untuk UMKM pedesaan: cari supplier komoditas, tawarkan produk desa, negosiasi harga cerdas, kelola pesanan & stok dengan asisten rekomendasi AI pintar.">
+  <meta name="keywords" content="UMKM desa, B2B pertanian, supplier pedesaan, negosiasi harga, komoditas desa, DesaBiz AI">
+  <meta name="author" content="DesaBiz AI Team">
+  <title>DesaBiz AI — Platform B2B UMKM Pedesaan</title>
+
+  <!-- Favicon SVG -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230f766e'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>">
+
+  <!-- Fonts Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- Master Stylesheet -->
+  <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+  <!-- App Shell Container -->
+  <div class="app-wrapper">
+    <!-- Sidebar Navigation -->
+    <aside id="app-sidebar-container" class="app-sidebar" aria-label="Sidebar Menu"></aside>
+
+    <!-- Main View Layout -->
+    <div class="app-main-layout">
+      <!-- Sticky Top Navbar -->
+      <header id="app-navbar-container" class="app-navbar" role="banner"></header>
+
+      <!-- Dynamic Content Injection Container -->
+      <main id="app-content-container" class="app-content" role="main"></main>
+    </div>
+  </div>
+
+  <!-- Notification Toasts Overlay -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- WhatsApp Fonnte Service -->
+  <script src="js/services/whatsapp/index.js"></script>
+
+  <!-- Application Bootstrap (ES6 Modules) -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

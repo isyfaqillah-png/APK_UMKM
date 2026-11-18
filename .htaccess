@@ -1,0 +1,19 @@
+# Apache Configuration for DesaBiz AI
+
+# Pastikan MIME Type javascript sesuai untuk modul ES6
+<IfModule mod_mime.c>
+    AddType application/javascript .js
+    AddType text/css .css
+    AddType image/svg+xml .svg
+</IfModule>
+
+# Caching & Performa
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/svg+xml "access plus 1 month"
+    ExpiresByType text/css "access plus 1 week"
+    ExpiresByType application/javascript "access plus 1 week"
+</IfModule>
+
+# Directory Index
+DirectoryIndex index.php index.html

@@ -1,0 +1,505 @@
+/* =========================================================================
+   AIDOCK - ASISTEN AI DI SISI KANAN LAYAR (tombol mengambang + panel slide-in)
+   --------------------------------------------------------------------------
+   • Desktop : panel fixed di sisi kanan, lebar 400px (rentang 360-420px),
+               tinggi mengikuti layar, sudut rapi + bayangan halus.
+   • Mobile  : hampir layar penuh, input tetap nyaman, tombol tutup terjangkau.
+   Warna & karakter visual mengikuti identitas DesaBiz AI (gradasi
+   #0f766e -> #0284c7) agar konsisten dengan desain website yang ada.
+   ========================================================================= */
+
+/* ---------- Tombol mengambang (launcher) ---------- */
+.aidock-fab {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 5.75rem; /* di atas zona toast (toast: bottom 1.5rem) */
+  width: 58px;
+  height: 58px;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0f766e, #0284c7);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 990;
+  box-shadow: 0 12px 28px rgba(2, 132, 199, 0.38);
+  transition: transform var(--transition-fast, 0.18s ease),
+    box-shadow var(--transition-fast, 0.18s ease),
+    opacity 0.2s ease;
+  animation: aidockPulse 2.8s ease-in-out infinite;
+}
+
+.aidock-fab svg {
+  width: 25px;
+  height: 25px;
+}
+
+.aidock-fab:hover {
+  transform: scale(1.07);
+  box-shadow: 0 16px 34px rgba(2, 132, 199, 0.45);
+}
+
+.aidock-fab:active {
+  transform: scale(0.95);
+}
+
+.aidock-fab:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 6px rgba(2, 132, 199, 0.45), 0 12px 28px rgba(2, 132, 199, 0.38);
+}
+
+/* Denyut halus agar tombol mudah ditemukan */
+@keyframes aidockPulse {
+
+  0%,
+  100% {
+    box-shadow: 0 12px 28px rgba(2, 132, 199, 0.38), 0 0 0 0 rgba(14, 165, 233, 0.35);
+  }
+
+  50% {
+    box-shadow: 0 12px 28px rgba(2, 132, 199, 0.38), 0 0 0 10px rgba(14, 165, 233, 0);
+  }
+}
+
+/* FAB disembunyikan selama panel terbuka / diminimalkan (tampilan ganda dicegah) */
+#aidock-root[data-state="open"] .aidock-fab,
+#aidock-root[data-state="min"] .aidock-fab {
+  opacity: 0;
+  transform: scale(0.6);
+  pointer-events: none;
+  visibility: hidden;
+  animation: none;
+}
+
+/* Root hanya wadah; anak-anaknya yang fixed -> wrapper tidak boleh
+   memakai transform/filter (agar posisi fixed anak tetap terhadap viewport) */
+#aidock-root {
+  display: contents;
+}
+
+#aidock-root.aidock-hidden {
+  display: none;
+}
+
+/* ---------- Panel sisi kanan ---------- */
+.aidock-panel {
+  position: fixed;
+  top: 1rem;
+  bottom: 1rem;
+  right: 1rem;
+  width: min(400px, calc(100vw - 2rem));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg-surface, #ffffff);
+  border: 1px solid var(--border-light, #e5e7eb);
+  border-radius: 20px;
+  box-shadow: 0 24px 64px rgba(15, 23, 42, 0.28);
+  z-index: 995;
+  /* Slide dari kanan */
+  transform: translateX(calc(100% + 2.5rem));
+  visibility: hidden;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0s linear 0.3s,
+    top 0.25s ease, bottom 0.25s ease, right 0.25s ease,
+    width 0.25s ease, border-radius 0.25s ease;
+}
+
+#aidock-root[data-state="open"] .aidock-panel {
+  transform: translateX(0);
+  visibility: visible;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0s linear 0s,
+    top 0.25s ease, bottom 0.25s ease, right 0.25s ease,
+    width 0.25s ease, border-radius 0.25s ease;
+}
+
+/* State diminimalkan: panel menyusut menjadi bilah ringkas di kanan bawah */
+#aidock-root[data-state="min"] .aidock-panel {
+  transform: translateX(0);
+  visibility: visible;
+  top: auto;
+  bottom: 5.75rem;
+  right: 1.5rem;
+  width: min(310px, calc(100vw - 3rem));
+  height: auto;
+  border-radius: 18px;
+}
+
+#aidock-root[data-state="min"] .aidock-body {
+  display: none;
+}
+
+/* ---------- Kepala panel ---------- */
+.aidock-head {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.68rem 0.78rem;
+  background: linear-gradient(135deg, #0f766e, #0284c7);
+  color: #ffffff;
+  flex-shrink: 0;
+  border-radius: 19px 19px 0 0;
+}
+
+#aidock-root[data-state="min"] .aidock-head {
+  border-radius: 17px;
+  padding: 0.65rem 0.75rem;
+}
+
+.aidock-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.aidock-avatar svg {
+  width: 19px;
+  height: 19px;
+}
+
+.aidock-head-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.aidock-head-text strong {
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Status online: titik hidup + status engine NYATA dari AIAssistantService */
+.aidock-status {
+  display: flex;
+  align-items: center;
+  gap: 0.32rem;
+  font-size: 0.67rem;
+  font-weight: 600;
+  opacity: 0.95;
+  min-width: 0;
+}
+
+.aidock-status em {
+  font-style: normal;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 170px;
+}
+
+.aidock-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4ade80;
+  flex-shrink: 0;
+  animation: aidockDot 2s ease-in-out infinite;
+}
+
+@keyframes aidockDot {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+  }
+
+  70% {
+    box-shadow: 0 0 0 6px rgba(74, 222, 128, 0);
+  }
+}
+
+.aidock-sep {
+  opacity: 0.7;
+}
+
+.aidock-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-shrink: 0;
+}
+
+.aidock-btn {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background var(--transition-fast, 0.18s ease), transform var(--transition-fast, 0.18s ease);
+}
+
+.aidock-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.aidock-btn:active {
+  transform: scale(0.94);
+}
+
+.aidock-btn:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 1px;
+}
+
+.aidock-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* ---------- Badan panel ---------- */
+.aidock-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: #f8fafc;
+  border-radius: 0 0 20px 20px;
+  overflow: hidden;
+}
+
+#aidock-root[data-state="min"] .aidock-body {
+  border-radius: 0;
+}
+
+.aidock-scroll {
+  padding: 0.8rem 0.72rem !important;
+  gap: 0.62rem !important;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.aidock-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.aidock-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+.aidock-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Bubble & isi pesan sedikit dikompaksi agar pas di lebar 400px
+   (mengikuti pola kompaksi chat dashboard yang sudah ada) */
+.aidock-body .ai-msg-content {
+  max-width: calc(100% - 42px);
+}
+
+.aidock-body .ai-bubble {
+  font-size: 0.79rem;
+  padding: 0.55rem 0.66rem;
+  line-height: 1.5;
+}
+
+/* Meta pesan (nama + jam) lebih ringkas di panel sempit */
+.aidock-body .ai-msg-meta {
+  font-size: 0.6rem;
+  gap: 0.35rem;
+  margin-top: 0.3rem;
+}
+
+/* Action pills & chip saran: skala panel (bukan skala halaman penuh) */
+.aidock-body .ai-action-pills {
+  margin-top: 0.55rem;
+  padding-top: 0.5rem;
+  gap: 0.3rem;
+}
+
+.aidock-body .ai-action-pill {
+  padding: 0.26rem 0.58rem;
+  font-size: 0.68rem;
+}
+
+.aidock-body .ai-chip {
+  padding: 0.28rem 0.58rem;
+  font-size: 0.68rem;
+}
+
+.aidock-body .ai-card {
+  min-width: 0;
+  padding: 0.6rem;
+  gap: 0.5rem;
+}
+
+.aidock-body .ai-card-img {
+  width: 84px;
+  height: 74px;
+}
+
+.aidock-body .ai-typing-label {
+  font-size: 0.68rem;
+}
+
+.aidock-body .ai-msg-avatar {
+  width: 26px;
+  height: 26px;
+  font-size: 0.6rem;
+}
+
+.aidock-body .ai-msg-avatar svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Layar sambutan dalam panel sempit: satu kolom, ringkas */
+.aidock-body .ai-welcome {
+  padding: 0.4rem 0.1rem;
+  gap: 0.45rem;
+}
+
+.aidock-body .ai-welcome-orb {
+  width: 46px;
+  height: 46px;
+  border-radius: 15px;
+}
+
+.aidock-body .ai-welcome-orb svg {
+  width: 20px;
+  height: 20px;
+}
+
+.aidock-body .ai-welcome h3 {
+  font-size: 1.02rem;
+  margin-top: 0.2rem;
+}
+
+.aidock-body .ai-welcome p {
+  font-size: 0.77rem;
+  line-height: 1.5;
+}
+
+.aidock-body .ai-welcome-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.45rem;
+  margin-top: 0.45rem;
+}
+
+.aidock-body .ai-welcome-card {
+  text-align: left;
+  padding: 0.6rem 0.7rem;
+  gap: 0.18rem;
+}
+
+.aidock-body .ai-welcome-card:hover {
+  transform: translateY(-1px);
+}
+
+/* Chip saran selalu tampil di dalam panel (di halaman penuh, chip hanya tampil <=980px) */
+.aidock-body .ai-suggest-strip {
+  display: flex;
+  padding: 0.5rem 0.6rem;
+}
+
+/* ---------- Composer ---------- */
+.aidock-composer {
+  padding: 0.6rem 0.65rem;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.aidock-composer .ai-input {
+  font-size: 0.84rem;
+  padding: 0.55rem 0.7rem;
+}
+
+.aidock-composer .btn-ai-send {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+}
+
+.aidock-disclaimer {
+  margin: 0;
+  padding: 0.2rem 0.7rem 0.5rem;
+  font-size: 0.6rem;
+}
+
+/* ---------- Responsif: mobile ---------- */
+@media (max-width: 568px) {
+  .aidock-panel {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: auto;
+    height: auto;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .aidock-head {
+    border-radius: 0;
+    padding: 0.85rem 0.9rem;
+  }
+
+  .aidock-body {
+    border-radius: 0;
+  }
+
+  /* Minimalkan di mobile: bilah ringkas melintang di atas tombol mengambang */
+  #aidock-root[data-state="min"] .aidock-panel {
+    top: auto;
+    right: 0.75rem;
+    bottom: 5.5rem;
+    left: 0.75rem;
+    width: auto;
+    border-radius: 16px;
+    box-shadow: 0 18px 44px rgba(15, 23, 42, 0.3);
+  }
+
+  .aidock-fab {
+    right: 1rem;
+    bottom: 1.25rem;
+    width: 54px;
+    height: 54px;
+  }
+
+  /* Cegah zoom otomatis iOS saat mengetik */
+  .aidock-body .ai-input {
+    font-size: 16px;
+  }
+
+  .aidock-composer {
+    padding-bottom: calc(0.6rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .aidock-disclaimer {
+    padding-bottom: calc(0.45rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* Aksesibilitas: hormati preferensi kurangi animasi */
+@media (prefers-reduced-motion: reduce) {
+
+  .aidock-panel,
+  .aidock-fab,
+  .aidock-btn {
+    transition: none !important;
+    animation: none !important;
+  }
+}

@@ -1,0 +1,17 @@
+# Konfigurasi rahasia
+/config/*.php
+!/config/config.example.php
+/config/*.bak
+
+# Log aplikasi
+/logs/
+
+# Pengaturan editor
+.vscode/
+
+# File environment
+.env
+.env.*
+!.env.example
+/test_ai_mock.php
+/test_whatsapp.php
